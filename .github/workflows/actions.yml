@@ -1,0 +1,28 @@
+name: Env demo
+on:
+  workflow_dispatch:
+  push:
+    branches:
+      - main
+
+env:
+  folder: .
+
+jobs:
+  python_test:
+    runs-in: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v3
+
+      - name: Echo the variable
+        run: echo "S3_BUCKET_NAME=eladbd-test" >> $GITHUB_ENV
+      
+      - name: Setup python
+        uses: actions/setup-python@v4
+        with: 
+          python-version: '3.10'
+          working-directory: ${{ env.folder }}
+      
+      - name: Run python script
+        run: python ${{ env.folder }}/test.py
+       
