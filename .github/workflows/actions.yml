@@ -25,6 +25,9 @@ jobs:
       - name: Terraform Init
         run: terraform apply -auto-approve
         working-directory: ${{ env.folder }}
+
+      - name: Debug
+        run: terraform output aws_s3_bucket_name
       
       - name: Inject terraform outputs to ENV
         run: echo "S3_BUCKET_NAME=$(terraform output aws_s3_bucket_name | tr -d '"')" >> $GITHUB_ENV
@@ -37,4 +40,3 @@ jobs:
 
       - name: Run python script
         run: python ${{ env.folder }}/test.py
-       
