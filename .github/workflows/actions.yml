@@ -20,7 +20,7 @@ jobs:
           python-version: '3.10'
 
       - name: Echo your variable / TERRAFORM OUTPUT !
-        run: echo "S3_BUCKET_NAME=eladbd-test" >> $GITHUB_ENV
+        run: echo "S3_BUCKET_NAME=$(echo '"test-eladbd-test"' | tr -d '"')" >> $GITHUB_ENV
       
       - name: Run python script
         run: python ${{ env.folder }}/test.py
