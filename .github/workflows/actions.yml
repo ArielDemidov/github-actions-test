@@ -6,7 +6,7 @@ on:
       - main
 
 env:
-  folder: .
+  folder: ./test
   S3_BUCKET_NAME: '.'
 
 jobs:
@@ -15,17 +15,26 @@ jobs:
     steps:
       - uses: actions/checkout@v3
 
+      - name: Setup Terraform
+        uses: hashicorp/setup-terraform@v1
+
+      - name: Terraform Init
+        run: terraform init
+        working-directory: ${{ env.folder }}
+
+      - name: Terraform Init
+        run: terraform apply -auto-approve
+        working-directory: ${{ env.folder }}
+      
+      - name: Inject terraform outputs to ENV
+        run: echo "S3_BUCKET_NAME=$(terraform output aws_s3_bucket_name | tr -d '"')" >> $GITHUB_ENV
+        working-directory: ${{ env.folder }}
+
       - name: Setup python
         uses: actions/setup-python@v4
         with: 
           python-version: '3.10'
 
-      - name: Terraform santiy check
-        run: echo '"test-eladbd-test"' | tr -d '"'
-
-      - name: Echo your variable / TERRAFORM OUTPUT !
-        run: echo "S3_BUCKET_NAME=$(echo '"test-eladbd-test"' | tr -d '"')" >> $GITHUB_ENV
-      
       - name: Run python script
         run: python ${{ env.folder }}/test.py
        
